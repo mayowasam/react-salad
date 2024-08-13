@@ -4,6 +4,7 @@ import resolve from '@rollup/plugin-node-resolve';
 import pkg from './package.json' with { type: "json" };
 import { babel } from '@rollup/plugin-babel';
 import { dts } from "rollup-plugin-dts";
+import postcss from 'rollup-plugin-postcss'
 
 
 export default [{
@@ -23,13 +24,13 @@ export default [{
         },
     ],
     external: [
-        'react', 
-        'react-dom', 
-        'antd', 
-        '@tanstack/react-query', 
+        'react',
+        'react-dom',
+        'antd',
+        '@tanstack/react-query',
         '@ant-design/nextjs-registry',
         'axios'
-      ], 
+    ],
     plugins: [
         typescript({
             tsconfig: './tsconfig.json',
@@ -42,11 +43,13 @@ export default [{
         }),
         resolve(),
         commonjs(),
+        postcss()
     ],
 },
 {
-input: './src/types/index.d.ts',
-output:[{file:'dist/index.d.ts',format: 'esm'}],
-plugins:[dts()]
+    input: './src/types/index.d.ts',
+    output: [{ file: 'dist/index.d.ts', format: 'esm' }],
+    plugins: [dts()],
+    external:[/\.css$/]
 }
 ];

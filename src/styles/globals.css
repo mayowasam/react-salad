@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* @import url('./_fonts/cabinetgrotesk/css/cabinet-grotesk.css'); */
+
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+
+.widget  .widgetform  .ant-form-item {
+  margin-bottom: 8px !important;
+}

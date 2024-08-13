@@ -1,6 +1,6 @@
 {
   "name": "@mayowasam/react-salad",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "description": "salad library",
   "scripts": {
     "rollup": "rollup --config"
@@ -38,10 +38,12 @@
     "@types/react-dom": "^18.3.0",
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.5",
+    "postcss": "^8.4.41",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "rollup": "^4.20.0",
     "rollup-plugin-dts": "^6.1.1",
+    "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-typescript2": "^0.36.0",
     "tailwindcss": "^3.4.9",
     "tslib": "^2.6.3",
