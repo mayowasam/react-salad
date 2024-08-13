@@ -1,11 +1,11 @@
 import React, { useState }  from "react"
-import withProviders from "../../scripts/withproviders"
 import { useMutation } from '@tanstack/react-query';
 import { Button, Form, Input, Select } from 'antd';
 import { DragUpload } from "../Uploads";
 import type { UploadFile } from 'antd';
 import type { LoanFormComponentProps } from "../../types";
 import { Api } from "../../scripts/endpoints";
+import withProviders from "../../scripts/withproviders"
 
 const { Option } = Select;
 
@@ -37,7 +37,7 @@ const Phone = ({ current, setCurrent }: LoanFormComponentProps) => {
                 layout="vertical"
                 // {...formItemLayout}
                 form={form}
-                name="individualloan"
+                name="invoice"
                 onFinish={onFinish}
                 initialValues={{
                     residence: 'hangzhou',
@@ -93,7 +93,7 @@ const Otp = ({ current, setCurrent }: LoanFormComponentProps) => {
                 layout="vertical"
                 // {...formItemLayout}
                 form={form}
-                name="individualloan"
+                name="invoiceotp"
                 onFinish={onFinish}
                 initialValues={{
                     residence: 'hangzhou',
@@ -368,10 +368,8 @@ const DocumentUpload = ({ current, setCurrent }: LoanFormComponentProps) => {
     )
 }
 
-
-
 function Invoice() {
-    const [current, setCurrent] = useState(2);
+    const [current, setCurrent] = useState(0);
 
     const steps = [
         {
