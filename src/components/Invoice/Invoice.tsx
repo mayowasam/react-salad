@@ -1,11 +1,10 @@
-import React from "react"
+import React, { useState }  from "react"
 import withProviders from "../../scripts/withproviders"
 import { useMutation } from '@tanstack/react-query';
-import type { UploadFile } from 'antd';
 import { Button, Form, Input, Select } from 'antd';
-import { useState } from 'react';
 import { DragUpload } from "../Uploads";
-import { LoanFormComponentProps } from "../../types";
+import type { UploadFile } from 'antd';
+import type { LoanFormComponentProps } from "../../types";
 import { Api } from "../../scripts/endpoints";
 
 const { Option } = Select;
