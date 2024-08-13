@@ -1,0 +1,59 @@
+{
+  "name": "@mayowasam/react-salad",
+  "version": "0.0.1",
+  "description": "salad library",
+  "scripts": {
+    "rollup": "rollup --config"
+  },
+  "keywords": [
+    "Javascript",
+    "Open Source",
+    "sourse",
+    "React",
+    "payment",
+    "Gateway"
+  ],
+  "author": "Awoyomi Mayowa Samuel mayowaawoyomi@gmail.com",
+  "license": "ISC",
+  "peerDependencies": {
+    "antd": "^5.20.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.24.8",
+    "@babel/core": "^7.25.2",
+    "@babel/preset-env": "^7.25.3",
+    "@babel/preset-react": "^7.24.7",
+    "@babel/preset-typescript": "^7.24.7",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-commonjs": "^26.0.1",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@tanstack/react-query": "^5.51.23",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "^14.2.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "rollup": "^4.20.0",
+    "rollup-plugin-dts": "^6.1.1",
+    "rollup-plugin-typescript2": "^0.36.0",
+    "tailwindcss": "^3.4.9",
+    "tslib": "^2.6.3",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "@ant-design/nextjs-registry": "^1.0.1",
+    "axios": "^1.7.3"
+  },
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mayowasam/react-salad.git"
+  }
+}
