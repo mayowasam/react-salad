@@ -6,4 +6,5 @@ es
 lib
 *.log
 .vim
+.env
 .vscode/
