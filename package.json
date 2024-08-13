@@ -54,6 +54,9 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/mayowasam/react-salad.git"
+    "url": "git+https://github.com/mayowasam/react-salad.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github/mayowasam"
   }
 }

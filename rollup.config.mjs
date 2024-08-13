@@ -23,9 +23,9 @@ export default [{
             sourcemap: true,
         },
     ],
-    // external: ['react', 'antd', 'react-dom', '@tanstack/react-query'],
+    external: ['react', 'antd', 'react-dom', '@tanstack/react-query'],
     plugins: [
-        // external(),
+        external(),
         typescript({
             tsconfig: './tsconfig.json',
             clean: true,
