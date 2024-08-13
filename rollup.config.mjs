@@ -43,7 +43,16 @@ export default [{
         }),
         resolve(),
         commonjs(),
-        postcss()
+        postcss({
+            config: {
+              path: './postcss.config.js',
+            },
+            extensions: ['.css'],
+            minimize: true,
+            inject: {
+              insertAt: 'top',
+            },
+          })
     ],
 },
 {
