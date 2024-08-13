@@ -10,7 +10,7 @@ import { changeCurrency, handleError } from '../../scripts/utils'
 import moment from 'moment';
 import { DownloadOutlined } from '@ant-design/icons';
 import withProviders from '../../scripts/withproviders';
-
+import '../../styles/globals.css'
 const { Option } = Select;
 
 const columns: TableProps<RepaymentTableProps>['columns'] = [
