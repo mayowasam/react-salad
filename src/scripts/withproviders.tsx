@@ -2,7 +2,7 @@ import React from 'react';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import { ConfigProvider } from "antd";
 import Providers from './providers';
-import '../../index.css'
+import '../index.css'
 
 
 const withProviders = <P extends object>(Component: React.ComponentType<P>) => {
