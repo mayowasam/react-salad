@@ -1,9 +1,8 @@
 import React from "react"
-import withProviders from "../../scripts/withproviders"
+import '../../index.css'
+// import withProviders from "../../scripts/withproviders"
 
 function Invoice() {
-
-
     return (
         <section className="bg-[#101828] text-white max-w-full min-h-screen flex items-center justify-center py-4">
 
@@ -12,4 +11,4 @@ function Invoice() {
     )
 }
 
-export default withProviders(Invoice)
+export default Invoice
