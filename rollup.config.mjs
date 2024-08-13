@@ -32,6 +32,16 @@ export default [{
         'axios'
     ],
     plugins: [
+        postcss({
+            config: {
+              path: './postcss.config.js',
+            },
+            extensions: ['.css'],
+            minimize: true,
+            inject: {
+              insertAt: 'top',
+            },
+          }),
         typescript({
             tsconfig: './tsconfig.json',
             clean: true,
@@ -42,17 +52,7 @@ export default [{
             extensions: ['.ts', '.js', '.tsx', '.jsx'],
         }),
         resolve(),
-        commonjs(),
-        postcss({
-            config: {
-              path: './postcss.config.js',
-            },
-            extensions: ['.css'],
-            minimize: true,
-            inject: {
-              insertAt: 'top',
-            },
-          })
+        commonjs()
     ],
 },
 {
