@@ -1,12 +1,12 @@
 import React from 'react';
-// import { AntdRegistry } from '@ant-design/nextjs-registry';
+import { AntdRegistry } from '@ant-design/nextjs-registry';
 import { ConfigProvider } from "antd";
 import Providers from './providers';
 
 const withProviders = <P extends object>(Component: React.ComponentType<P>) => {
   return (props: P) => (
     <Providers>
-      {/* <AntdRegistry> */}
+      <AntdRegistry>
         <ConfigProvider
           theme={{
             token: {
@@ -18,7 +18,7 @@ const withProviders = <P extends object>(Component: React.ComponentType<P>) => {
         >
           <Component {...props} />
         </ConfigProvider>
-      {/* </AntdRegistry> */}
+      </AntdRegistry>
     </Providers>
   );
 };
