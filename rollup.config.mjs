@@ -22,7 +22,14 @@ export default [{
             sourcemap: true,
         },
     ],
-    external: ['react', 'antd', 'react-dom', '@tanstack/react-query'],
+    external: [
+        'react', 
+        'react-dom', 
+        'antd', 
+        '@tanstack/react-query', 
+        '@ant-design/nextjs-registry',
+        'axios'
+      ], 
     plugins: [
         typescript({
             tsconfig: './tsconfig.json',

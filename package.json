@@ -1,6 +1,6 @@
 {
   "name": "@mayowasam/react-salad",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "salad library",
   "scripts": {
     "rollup": "rollup --config"
@@ -17,8 +17,11 @@
   "license": "ISC",
   "peerDependencies": {
     "antd": "^5.20.1",
+    "@ant-design/nextjs-registry": "^1.0.1",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "@tanstack/react-query": "^5.51.23",
+    "axios": "^1.7.3"
   },
   "devDependencies": {
     "@babel/cli": "^7.24.8",
@@ -42,10 +45,6 @@
     "tailwindcss": "^3.4.9",
     "tslib": "^2.6.3",
     "typescript": "^5.5.4"
-  },
-  "dependencies": {
-    "@ant-design/nextjs-registry": "^1.0.1",
-    "axios": "^1.7.3"
   },
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
