@@ -1,8 +1,7 @@
 import typescript from 'rollup-plugin-typescript2';
 import commonjs from '@rollup/plugin-commonjs';
-// import external from 'rollup-plugin-peer-deps-external';
 import resolve from '@rollup/plugin-node-resolve';
-import pkg from './package.json' assert { type: "json" };
+import pkg from './package.json' with { type: "json" };
 import { babel } from '@rollup/plugin-babel';
 import { dts } from "rollup-plugin-dts";
 
@@ -25,7 +24,6 @@ export default [{
     ],
     external: ['react', 'antd', 'react-dom', '@tanstack/react-query'],
     plugins: [
-        external(),
         typescript({
             tsconfig: './tsconfig.json',
             clean: true,
