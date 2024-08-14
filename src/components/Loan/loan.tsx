@@ -1,12 +1,12 @@
-import React, { useEffect, useReducer, useState } from 'react';
-import  {Uploads , DragUpload } from '../Uploads';
-import type { LoanFormComponentProps, RepaymentAction, RepaymentState, RepaymentTableProps } from '../../types';
+import React, { Fragment, useEffect, useReducer, useState } from 'react';
+import { Uploads, DragUpload } from '../Uploads';
+import type { LoanAction, LoanFormComponentProps, LoanState, RepaymentAction, RepaymentState, RepaymentTableProps, UseLoanProps } from '../../types';
 import { Api } from '../../scripts/endpoints';
 import { handler } from '../../scripts/localstorage';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { Button, DatePicker, Form, Input, InputNumber, Select, Image, Table } from 'antd';
+import { Button, DatePicker, Form, Input, InputNumber, Select, Image, Table, Checkbox, Modal } from 'antd';
 import type { TableProps, UploadFile } from 'antd';
-import { changeCurrency, handleError } from '../../scripts/utils'
+import { changeCurrency, formatPhoneNumber, handleError } from '../../scripts/utils'
 import moment from 'moment';
 import { DownloadOutlined } from '@ant-design/icons';
 import withProviders from '../../scripts/withproviders';
@@ -35,16 +35,16 @@ const columns: TableProps<RepaymentTableProps>['columns'] = [
     },
 ];
 
-const Phone = ({ current, setCurrent }: LoanFormComponentProps) => {
+export const Phone: React.FC<LoanFormComponentProps> = ({ current, setCurrent }) => {
     const [form] = Form.useForm();
 
     const onFinish = async (values: any) => {
-        console.log({ values });
+        handler('salad-widget-loan', {
+            phone: formatPhoneNumber(values.phone),
+            loan_type: 'salad_loan',
+        });
+        setCurrent(current + 1);
 
-        try {
-            setCurrent(current + 1);
-        } catch (error) {
-        };
     }
     const prefixSelector = (
         <Form.Item name="prefix" noStyle>
@@ -102,13 +102,12 @@ const Otp = ({ current, setCurrent }: LoanFormComponentProps) => {
     const [form] = Form.useForm();
 
     const onFinish = async (values: any) => {
-        console.log(values);
-
-        try {
-            setCurrent(current + 1);
-
-        } catch (error) {
-        };
+        const getLocalStorage = handler('salad-widget-loan')
+        handler('salad-widget-loan', {
+            ...getLocalStorage,
+            ...values
+        })
+        setCurrent(current + 1);
     }
     return (
         <div className='bg-white w-[400px]  rounded-xl'>
@@ -131,6 +130,7 @@ const Otp = ({ current, setCurrent }: LoanFormComponentProps) => {
             >
                 <div className='p-6'>
                     <Form.Item
+                        name='otp'
                         hasFeedback
                         validateStatus="success">
                         <Input.OTP size='large' />
@@ -153,18 +153,19 @@ const Otp = ({ current, setCurrent }: LoanFormComponentProps) => {
     )
 }
 
-const Step1 = ({ current, setCurrent }: LoanFormComponentProps) => {
+const Name = ({ current, setCurrent }: LoanFormComponentProps) => {
     const [form] = Form.useForm();
+    const [Information] = useState(handler('salad-widget-loan'))
 
     const onFinish = async (values: any) => {
-        console.log(values);
-
-        try {
-            setCurrent(current + 1);
-
-        } catch (error) {
-        };
+        const getLocalStorage = handler('salad-widget-loan')
+        handler('salad-widget-loan', {
+            ...getLocalStorage,
+            ...values
+        })
+        setCurrent(current + 1);
     }
+
     return (
         <div className='bg-white w-[400px]  rounded-xl'>
             <h1 className='text-black text-2xl font-extrabold pt-6 pb-4 px-6 '>Step 1 of 3</h1>
@@ -177,6 +178,9 @@ const Step1 = ({ current, setCurrent }: LoanFormComponentProps) => {
                 name="individualloan"
                 onFinish={onFinish}
                 initialValues={{
+                    firstname: Information?.firstname ? Information.firstname : "",
+                    lastname: Information?.lastname ? Information.lastname : "",
+                    email: Information?.email ? Information.email : "",
                     residence: 'hangzhou',
                     suffix: "Naira",
                     prefix: '+234'
@@ -201,8 +205,6 @@ const Step1 = ({ current, setCurrent }: LoanFormComponentProps) => {
                     >
                         <Input size="large" placeholder="Enter last name" />
                     </Form.Item>
-
-
 
                     <Form.Item
                         name="email"
@@ -239,21 +241,39 @@ const Step1 = ({ current, setCurrent }: LoanFormComponentProps) => {
     )
 }
 
-const Step2 = ({ current, setCurrent }: LoanFormComponentProps) => {
+const Employment = ({ current, setCurrent }: LoanFormComponentProps) => {
     const [form] = Form.useForm();
-    const [personalInfromation] = useState(handler('personalInfo'))
+    const [Information] = useState(handler('salad-widget-loan'))
     const { data } = useQuery({
         queryFn: Api.fetchBank,
         queryKey: ["fetch banks"],
     })
+    const [event, updateEvent] = useReducer(
+        (prev: LoanState, next: LoanAction): LoanState => {
+            return {
+                ...prev,
+                ...next,
+            };
+        },
+        {
+            bank_code: Information?.bank_code ?? "",
+            account_number: Information?.account_number ?? "",
+            accountStatus: "",
+            bank_name: Information?.bank_name ?? "",
+            existingUserErrors: []
+        }
+    );
 
     const onFinish = async (values: any) => {
-        console.log(values);
-        try {
-            setCurrent(current + 1);
+        const getLocalStorage = handler('salad-widget-loan')
+        handler('salad-widget-loan', {
+            ...getLocalStorage,
+            ...values,
+            monthly_income: String(values?.monthly_income),
+            bank_name: event.bank_name,
 
-        } catch (error) {
-        };
+        })
+        setCurrent(current + 1);
     }
 
     const suffixSelector = (
@@ -272,6 +292,18 @@ const Step2 = ({ current, setCurrent }: LoanFormComponentProps) => {
         value: item.code,
         label: item.name,
     }));
+    const onValuesChange = (changedValues: any,) => {
+        // console.log({ allValues });
+
+        if (changedValues.bank_code) {
+            const bank_name = data?.data?.payload?.find(item => item.code === changedValues.bank_code)?.name
+            updateEvent({ bank_code: changedValues.bank_code, bank_name });
+        }
+        if (changedValues.account_number) {
+            updateEvent({ account_number: changedValues.account_number });
+        }
+    };
+
     return (
         <div className='bg-white w-[400px] rounded-xl widget'>
             <h1 className='text-black text-2xl font-extrabold pt-6 pb-4 px-6 '>Step 2 of 3</h1>
@@ -282,12 +314,13 @@ const Step2 = ({ current, setCurrent }: LoanFormComponentProps) => {
                 // {...formItemLayout}
                 form={form}
                 name="register"
+                onValuesChange={onValuesChange}
                 onFinish={onFinish}
                 initialValues={{
-                    ...personalInfromation,
-                    employment_date: personalInfromation?.employment_date ? moment(personalInfromation.employment_date) : "",
-                    contract_type: personalInfromation?.contract_type,
-                    phone: personalInfromation?.phone.slice(4),
+                    ...Information,
+                    employment_date: Information?.employment_date ? moment(Information.employment_date) : "",
+                    contract_type: Information?.contract_type,
+                    phone: Information?.phone.slice(4),
                     suffix: "Naira",
                     prefix: '+234'
                 }}
@@ -384,16 +417,16 @@ const Step2 = ({ current, setCurrent }: LoanFormComponentProps) => {
     )
 }
 
-const Step3 = ({ current, setCurrent }: LoanFormComponentProps) => {
+const UploadVerification = ({ current, setCurrent }: LoanFormComponentProps) => {
     const [form] = Form.useForm();
-    const [verificationInformation] = useState(handler('verificationInfo'))
-    const [selectedItem, setSelectedItem] = useState(verificationInformation?.verification_type ?? "");
+    const [information] = useState(handler('salad-widget-loan'))
+    const [selectedItem, setSelectedItem] = useState(information?.verification_type ?? "");
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [verificationfileList, setverificationFileList] = useState<UploadFile[]>([]);
     const [previewOpen, setPreviewOpen] = useState(false);
-    const [previewImage, setPreviewImage] = useState(verificationInformation?.image_url ?? '');
+    const [previewImage, setPreviewImage] = useState(information?.image_url ?? '');
     const [previewDocOpen, setPreviewDocOpen] = useState(false);
-    const [previewDocImage, setPreviewDocImage] = useState(verificationInformation?.verification_url ?? '');
+    const [previewDocImage, setPreviewDocImage] = useState(information?.verification_url ?? '');
 
     const { mutateAsync } = useMutation({
         mutationFn: Api.upload,
@@ -406,12 +439,13 @@ const Step3 = ({ current, setCurrent }: LoanFormComponentProps) => {
     };
 
     const onFinish = async (values: any) => {
-        console.log(values);
-        try {
-            setCurrent(current + 1);
-
-        } catch (error) {
-        };
+        const getLocalStorage = handler('salad-widget-loan')
+        handler('salad-widget-loan', {
+            ...getLocalStorage,
+            ...values,
+            bvn: String(values.bvn),
+        })
+        setCurrent(current + 1);
     }
 
     return (
@@ -425,12 +459,11 @@ const Step3 = ({ current, setCurrent }: LoanFormComponentProps) => {
                 name="verifyInformation"
                 onFinish={onFinish}
                 initialValues={{
-                    // ...verificationInformation,
-                    image_url: verificationInformation?.image_url ? verificationInformation?.image_url : "",
-                    verification_type: verificationInformation?.verification_type ? verificationInformation?.verification_type : "",
-                    verification_url: verificationInformation?.verification_url ? verificationInformation?.verification_url : "",
-                    address: verificationInformation?.address ? verificationInformation?.address : "",
-                    bvn: verificationInformation?.bvn ? verificationInformation?.bvn : "",
+                    image_url: information?.image_url ? information?.image_url : "",
+                    verification_type: information?.verification_type ? information?.verification_type : "",
+                    verification_url: information?.verification_url ? information?.verification_url : "",
+                    address: information?.address ? information?.address : "",
+                    bvn: information?.bvn ? information?.bvn : "",
                     suffix: "Naira",
                     prefix: '86'
                 }}
@@ -466,10 +499,10 @@ const Step3 = ({ current, setCurrent }: LoanFormComponentProps) => {
 
                         <div className='p-4  '>
                             {
-                                verificationInformation?.image_url &&
+                                information?.image_url &&
                                 <Image
                                     width={200}
-                                    src={verificationInformation?.image_url}
+                                    src={information?.image_url}
                                     alt=""
                                 />
 
@@ -503,7 +536,7 @@ const Step3 = ({ current, setCurrent }: LoanFormComponentProps) => {
                             label={<span style={{ fontWeight: "bold" }}>Select ID</span>}
                             rules={[{ required: true, message: 'Please select item to Upload!' }]}
                         >
-                            <Select placeholder="Select your item" size="large" onChange={handleSelectChange} >
+                            <Select placeholder="Select your item" size="large" onChange={handleSelectChange}>
                                 <Option value="drivers_license">Drivers License</Option>
                                 <Option value="international_passport">International Passport</Option>
                                 <Option value="voters_card">Voters Card</Option>
@@ -536,10 +569,10 @@ const Step3 = ({ current, setCurrent }: LoanFormComponentProps) => {
                         )}
 
                         {
-                            verificationInformation?.verification_url &&
+                            information?.verification_url &&
                             <Image
                                 width={200}
-                                src={verificationInformation?.verification_url}
+                                src={information?.verification_url}
                                 alt=""
                             />
                         }
@@ -560,7 +593,7 @@ const Step3 = ({ current, setCurrent }: LoanFormComponentProps) => {
     )
 }
 
-const LoanComp = () => {
+export const LoanComponent = () => {
     const [form] = Form.useForm();
     const [event, updateEvent] = useReducer(
         (prev: RepaymentState, next: RepaymentAction): RepaymentState => {
@@ -590,7 +623,7 @@ const LoanComp = () => {
     })
 
     const { mutateAsync, isPending } = useMutation({
-        mutationFn: Api.requestLoan,
+        mutationFn: Api.externalRequestLoan,
         mutationKey: ["request loan"],
 
     })
@@ -607,30 +640,29 @@ const LoanComp = () => {
     };
 
     const onFinish = async (values: any) => {
-        const personalInfo = handler('personalInfo');
-        const verificationInfo = handler('verificationInfo')
+        const information = handler('salad-widget-loan')
         try {
             const data = {
                 repayment_period: +values.repayment_period,
                 amount: values.amount,
                 statement_url: values.statement_url ?? "",
-                email: personalInfo.email,
-                phone: personalInfo.phone,
-                firstname: personalInfo.firstname,
-                lastname: personalInfo.lastname,
-                address: verificationInfo.address,
-                employer_name: personalInfo.employer_name,
-                employment_date: personalInfo.employment_date,
-                contract_type: personalInfo.contract_type,
-                monthly_income: personalInfo.monthly_income,
-                account_number: personalInfo.account_number,
-                bank_code: personalInfo.bank_code,
-                bvn: verificationInfo.bvn,
-                bank_name: personalInfo.bank_name,
-                verification_type: verificationInfo.verification_type,
-                image_url: verificationInfo.image_url,
-                verification_url: verificationInfo.verification_url,
-                loan_type: 'salad_loan'
+                email: information.email,
+                phone: information.phone,
+                firstname: information.firstname,
+                lastname: information.lastname,
+                address: information.address,
+                employer_name: information.employer_name,
+                employment_date: information.employment_date,
+                contract_type: information.contract_type,
+                monthly_income: information.monthly_income,
+                account_number: information.account_number,
+                bank_code: information.bank_code,
+                bvn: information.bvn,
+                bank_name: information.bank_name,
+                verification_type: information.verification_type,
+                image_url: information.image_url,
+                verification_url: information.verification_url,
+                loan_type: information.loan_type
             }
             const response = await mutateAsync(data)
 
@@ -761,7 +793,21 @@ const LoanComp = () => {
 
                     </div>
 
-
+                    <Form.Item
+                        name="agreement"
+                        valuePropName="checked"
+                        rules={[
+                            {
+                                validator: (_, value) =>
+                                    value ? Promise.resolve() : Promise.reject(new Error('Should accept agreement')),
+                            },
+                        ]}
+                    // {...tailFormItemLayout}
+                    >
+                        <Checkbox>
+                            I have read the terms of the Loan Agreement
+                        </Checkbox>
+                    </Form.Item>
 
                     <Form.Item>
                         <div className="flex justify-center pt-4">
@@ -773,12 +819,13 @@ const LoanComp = () => {
                     </Form.Item>
 
                 </div>
-            </Form>
-        </div>
+            </Form >
+        </div >
     )
 }
 
-function Loan() {
+export function Loan({ name }: UseLoanProps) {
+    const [open, setOpen] = useState(false)
     const [current, setCurrent] = useState(0);
 
     const steps = [
@@ -789,25 +836,33 @@ function Loan() {
             content: <Otp current={current} setCurrent={setCurrent} />,
         },
         {
-            content: <Step1 current={current} setCurrent={setCurrent} />,
+            content: <Name current={current} setCurrent={setCurrent} />,
         },
         {
-            content: <Step2 current={current} setCurrent={setCurrent} />,
+            content: <Employment current={current} setCurrent={setCurrent} />,
         },
         {
-            content: <Step3 current={current} setCurrent={setCurrent} />,
+            content: <UploadVerification current={current} setCurrent={setCurrent} />,
         },
         {
-            content: <LoanComp />,
+            content: <LoanComponent />,
         },
     ];
 
     return (
-        <section className="bg-[#101828] text-white max-w-full min-h-screen flex items-center justify-center py-4">
+
+        <Fragment>
+            <button className='p-2' onClick={() => setOpen(!open)}>{name ?? "Pay with Salad"}</button>
+            <Modal title="Basic Modal" open={open} onOk={() => setOpen(true)} onCancel={() => setOpen(false)}>
+            <section className="bg-[#101828] text-white max-w-full min-h-screen flex items-center justify-center py-4">
             <div>{steps[current].content}</div>
 
         </section>
+            </Modal>
+        </Fragment>
+        
     )
 }
+
 
 export default withProviders(Loan)

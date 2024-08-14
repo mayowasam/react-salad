@@ -1,24 +1,64 @@
-import React, { useState }  from "react"
+import React, { useReducer, useState }  from "react"
 import { useMutation } from '@tanstack/react-query';
-import { Button, Form, Input, Select } from 'antd';
+import { Button, Form, Input, Modal, Select } from 'antd';
 import { DragUpload } from "../Uploads";
 import type { UploadFile } from 'antd';
-import type { LoanFormComponentProps } from "../../types";
+import type { LoanFormComponentProps, ModalAction, ModalComponentProps, ModalState } from "../../types";
 import { Api } from "../../scripts/endpoints";
 import withProviders from "../../scripts/withproviders"
+import { handler } from "../../scripts/localstorage";
+import { formatPhoneNumber, handleError } from "../../scripts/utils";
 
 const { Option } = Select;
+
+function ModalComponent({ isModalOpen, setIsModalOpen, message, maskClosable = false }: ModalComponentProps) {
+
+    const handleOk = () => {
+        setIsModalOpen(false);
+    };
+
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
+
+    return (
+        <>
+
+            <Modal
+                width={'400px'}
+                centered
+                open={isModalOpen}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                maskClosable={maskClosable}
+                footer={
+                    <Button type="primary" onClick={handleOk} block size='large'
+                    >
+                        Ok
+                    </Button>
+
+                }
+
+            >
+                <div className='min-h-[200px] flex flex-col justify-center items-center'>
+                    {message}
+                </div>
+
+
+            </Modal>
+        </>
+    );
+};
 
 const Phone = ({ current, setCurrent }: LoanFormComponentProps) => {
     const [form] = Form.useForm();
 
     const onFinish = async (values: any) => {
-        console.log({ values });
+        handler('salad-widget-invoice', {
+            phone: formatPhoneNumber(values.phone),
+        });
+        setCurrent(current + 1);
 
-        try {
-            setCurrent(current + 1);
-        } catch (error) {
-        };
     }
     const prefixSelector = (
         <Form.Item name="prefix" noStyle>
@@ -37,7 +77,7 @@ const Phone = ({ current, setCurrent }: LoanFormComponentProps) => {
                 layout="vertical"
                 // {...formItemLayout}
                 form={form}
-                name="invoice"
+                name="individualloan"
                 onFinish={onFinish}
                 initialValues={{
                     residence: 'hangzhou',
@@ -76,13 +116,12 @@ const Otp = ({ current, setCurrent }: LoanFormComponentProps) => {
     const [form] = Form.useForm();
 
     const onFinish = async (values: any) => {
-        console.log(values);
-
-        try {
-            setCurrent(current + 1);
-
-        } catch (error) {
-        };
+        const getLocalStorage = handler('salad-widget-invoice')
+        handler('salad-widget-invoice', {
+            ...getLocalStorage,
+            ...values
+        })
+        setCurrent(current + 1);
     }
     return (
         <div className='bg-white w-[400px]  rounded-xl'>
@@ -93,7 +132,7 @@ const Otp = ({ current, setCurrent }: LoanFormComponentProps) => {
                 layout="vertical"
                 // {...formItemLayout}
                 form={form}
-                name="invoiceotp"
+                name="individualloan"
                 onFinish={onFinish}
                 initialValues={{
                     residence: 'hangzhou',
@@ -105,6 +144,7 @@ const Otp = ({ current, setCurrent }: LoanFormComponentProps) => {
             >
                 <div className='p-6'>
                     <Form.Item
+                        name='otp'
                         hasFeedback
                         validateStatus="success">
                         <Input.OTP size='large' />
@@ -126,18 +166,16 @@ const Otp = ({ current, setCurrent }: LoanFormComponentProps) => {
         </div>
     )
 }
-
 const CompanyDetails = ({ current, setCurrent }: LoanFormComponentProps) => {
     const [form] = Form.useForm();
 
     const onFinish = async (values: any) => {
-        console.log(values);
-
-        try {
-            setCurrent(current + 1);
-
-        } catch (error) {
-        };
+        const getLocalStorage = handler('salad-widget-invoice')
+        handler('salad-widget-invoice', {
+            ...getLocalStorage,
+            ...values
+        })
+        setCurrent(current + 1);
     }
     return (
         <div className='bg-white w-[400px]  rounded-xl'>
@@ -209,7 +247,7 @@ const CompanyDetails = ({ current, setCurrent }: LoanFormComponentProps) => {
     )
 }
 
-const DocumentUpload = ({ current, setCurrent }: LoanFormComponentProps) => {
+const DocumentUpload = () => {
     const [form] = Form.useForm();
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [invoiceList, setInvoiceList] = useState<UploadFile[]>([]);
@@ -223,7 +261,19 @@ const DocumentUpload = ({ current, setCurrent }: LoanFormComponentProps) => {
     const [previewCacImage, setPreviewCacImage] = useState('');
     const [previewDirOpen, setPreviewDirOpen] = useState(false);
     const [previewDirImage, setPreviewDirImage] = useState('');
-
+    const [event, updateEvent] = useReducer(
+        (prev: ModalState, next: ModalAction): ModalState => {
+            return {
+                ...prev,
+                ...next,
+            };
+        },
+        {
+            isModalOpen: false,
+            message: '',
+            href: false
+        }
+    );
 
     const { mutateAsync } = useMutation({
         mutationFn: Api.upload,
@@ -240,14 +290,33 @@ const DocumentUpload = ({ current, setCurrent }: LoanFormComponentProps) => {
 
     const onFinish = async (values: any) => {
         console.log(values);
-        console.log(mutateInvoice);
-        
         try {
-            setCurrent(current + 1);
+            const response = await mutateInvoice({
+                ...values,
+            })
+            if (response?.data?.payload) {
+                updateEvent({
+                    isModalOpen: true,
+                    href: true,
+                    message: <>
+                        <p className='font-bold text-xl py-3'>Invoice Request Successful </p>
+                        <span className=''>Your invoice request is acknowledged, We will get back to you.</span>
+                    </>
+                })
 
+                form.resetFields();
+                setFileList([]);
+                setInvoiceList([]);
+                return;
+            }
         } catch (error) {
+            handleError(error, updateEvent)
         };
     }
+
+    const setIsModalOpen = (isOpen: boolean) => {
+        updateEvent({ isModalOpen: isOpen });
+    };
 
 
     return (
@@ -364,6 +433,14 @@ const DocumentUpload = ({ current, setCurrent }: LoanFormComponentProps) => {
 
                 </div>
             </Form>
+
+            <ModalComponent
+                isModalOpen={event.isModalOpen}
+                setIsModalOpen={setIsModalOpen}
+                message={event.message}
+                href={event.href}
+
+            />
         </div>
     )
 }
@@ -382,7 +459,7 @@ function Invoice() {
             content: <CompanyDetails current={current} setCurrent={setCurrent} />,
         },
         {
-            content: <DocumentUpload current={current} setCurrent={setCurrent} />,
+            content: <DocumentUpload  />,
         },
     ];
 

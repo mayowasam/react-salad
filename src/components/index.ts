@@ -1,2 +1,2 @@
-export {default as Loan} from './Loan' 
-export {default as Invoice} from './Invoice' 
+export {default as SaladLoanButton} from './Loan' 
+export {default as SaladInvoiceButton} from './Invoice' 

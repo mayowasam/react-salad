@@ -51,6 +51,14 @@ class API {
             throw error as Promise<AxiosError<ApiError>>;
         }
     }
+    async externalRequestLoan(data: RequestLoan): Promise<AxiosResponse<ApiRequestLoan>> {
+        try {
+            const response = await baseInstance.post("/loan/request", data);
+            return response;
+        } catch (error) {
+            throw error as Promise<AxiosError<ApiError>>;
+        }
+    }
     async repaymentDate(data: RepaymentInfo): Promise<AxiosResponse<ApiRepaymentInfo>> {
         try {
             const response = await baseInstance.post("/loan/repayments", data);

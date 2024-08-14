@@ -22,7 +22,14 @@ type UploadComponentProps = {
     dragAreaText?: string,
     validType?: string[]
 }
+interface ModalComponentProps {
+    isModalOpen: boolean,
+    setIsModalOpen: (isOpen: boolean) => void,
+    message: ReactNode;
+    href: boolean,
+    maskClosable?:boolean
 
+}
 interface ModalState {
     isModalOpen: boolean,
     message: string | ReactNode
@@ -31,9 +38,24 @@ interface ModalState {
 
 type ModalAction = Partial<ModalState>;
 
+interface LoanState {
+    bank_code: string;
+    account_number: string;
+    bank_name: string;
+    accountStatus: "" | "validating" | "success" | "warning" | "error" | undefined;
+    existingUserErrors?: string[]
+}
+
+type LoanAction = Partial<LoanState>;
+
 type LoanFormComponentProps = {
     current: number
     setCurrent: React.Dispatch<React.SetStateAction<number>>;
+}
+
+
+interface UseLoanProps {
+    name?: string
 }
 
 interface RepaymentState extends ModalState {
