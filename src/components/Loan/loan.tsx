@@ -849,18 +849,30 @@ export function Loan({ name }: UseLoanProps) {
         },
     ];
 
+    const modalStyles = {
+        content: { 
+          background: 'none',
+        },
+    }
+
     return (
 
         <Fragment>
-            <button className='p-2' onClick={() => setOpen(!open)}>{name ?? "Pay with Salad"}</button>
-            <Modal title="Basic Modal" open={open} onOk={() => setOpen(true)} onCancel={() => setOpen(false)}>
-            <section className="bg-[#101828] text-white max-w-full min-h-screen flex items-center justify-center py-4">
-            <div>{steps[current].content}</div>
+            <button className='w-[150px] p-3 rounded bg-[#4dae37] text-white' onClick={() => setOpen(!open)}>{name ?? "Pay with Salad"}</button>
+            <Modal
+                footer={null}
+                open={open}
+                onOk={() => setOpen(true)}
+                onCancel={() => setOpen(false)}
+                styles={modalStyles}
+            >
+            <section className=" text-white max-w-full  flex items-center justify-center py-4">
+                <div>{steps[current].content}</div>
 
-        </section>
-            </Modal>
-        </Fragment>
-        
+            </section>
+        </Modal>
+        </Fragment >
+
     )
 }
 

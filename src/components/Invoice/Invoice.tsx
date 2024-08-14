@@ -1,9 +1,9 @@
-import React, { useReducer, useState }  from "react"
+import React, { Fragment, useReducer, useState }  from "react"
 import { useMutation } from '@tanstack/react-query';
 import { Button, Form, Input, Modal, Select } from 'antd';
 import { DragUpload } from "../Uploads";
 import type { UploadFile } from 'antd';
-import type { LoanFormComponentProps, ModalAction, ModalComponentProps, ModalState } from "../../types";
+import type { LoanFormComponentProps, ModalAction, ModalComponentProps, ModalState, UseLoanProps } from "../../types";
 import { Api } from "../../scripts/endpoints";
 import withProviders from "../../scripts/withproviders"
 import { handler } from "../../scripts/localstorage";
@@ -445,8 +445,16 @@ const DocumentUpload = () => {
     )
 }
 
-function Invoice() {
+function Invoice({ name }: UseLoanProps) {
+    const [open, setOpen] = useState(false)
     const [current, setCurrent] = useState(0);
+
+    const modalStyles = {
+        content: { 
+          background: 'none',
+        },
+    }
+
 
     const steps = [
         {
@@ -463,11 +471,22 @@ function Invoice() {
         },
     ];
 
-    return (
-        <section className="bg-[#101828] text-white max-w-full min-h-screen flex items-center justify-center py-4">
-            <div>{steps[current].content}</div>
+    return ( 
+        <Fragment>
+            <button className='w-[150px] p-3 rounded bg-[#4dae37] text-white' onClick={() => setOpen(!open)}>{name ?? "Pay with Salad"}</button>
+            <Modal
+                footer={null}
+                open={open}
+                onOk={() => setOpen(true)}
+                onCancel={() => setOpen(false)}
+                styles={modalStyles}
+            >
+            <section className=" text-white max-w-full  flex items-center justify-center py-4">
+                <div>{steps[current].content}</div>
 
-        </section>
+            </section>
+        </Modal>
+        </Fragment >
     )
 }
 
