@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Modal } from "antd";
 import type { ModalComponentProps } from "../../types";
 
-export function ModalComponent({ isModalOpen, setIsModalOpen, message, maskClosable = false }: ModalComponentProps) {
+export function ModalComponent({ isModalOpen, setIsModalOpen, message, href, maskClosable = false }: ModalComponentProps) {
 
     const handleOk = () => {
         setIsModalOpen(false);
@@ -23,10 +23,24 @@ export function ModalComponent({ isModalOpen, setIsModalOpen, message, maskClosa
                 onCancel={handleCancel}
                 maskClosable={maskClosable}
                 footer={
-                    <Button type="primary" onClick={handleOk} block size='large'
-                    >
-                        Ok
-                    </Button>
+                    href ?
+
+                        <Button type="primary" onClick={() => {
+                            if (href) {
+                                window.location.href = href; // Then navigate to href
+                            }
+                        }} block size='large'
+                        >
+                            Ok
+
+                        </Button>
+
+                        :
+
+                        <Button type="primary" onClick={handleOk} block size='large'
+                        >
+                            Ok
+                        </Button>
 
                 }
 

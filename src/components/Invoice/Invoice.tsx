@@ -247,7 +247,9 @@ const CompanyDetails = ({ current, setCurrent }: LoanFormComponentProps) => {
     )
 }
 
-const DocumentUpload = () => {
+const DocumentUpload = ({setOpen}: {
+    setOpen:React.Dispatch<React.SetStateAction<boolean>>
+}) => {
     const [form] = Form.useForm();
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [invoiceList, setInvoiceList] = useState<UploadFile[]>([]);
@@ -271,7 +273,7 @@ const DocumentUpload = () => {
         {
             isModalOpen: false,
             message: '',
-            href: false
+            href: ''
         }
     );
 
@@ -296,9 +298,10 @@ const DocumentUpload = () => {
                 ...values,
             })
             if (response?.data?.payload) {
+                setOpen(false);
                 updateEvent({
                     isModalOpen: true,
-                    href: true,
+                    href: '/',
                     message: <>
                         <p className='font-bold text-xl py-3'>Invoice Request Successful </p>
                         <span className=''>Your invoice request is acknowledged, We will get back to you.</span>
@@ -468,7 +471,7 @@ function Invoice({ name }: UseLoanProps) {
             content: <CompanyDetails current={current} setCurrent={setCurrent} />,
         },
         {
-            content: <DocumentUpload />,
+            content: <DocumentUpload setOpen={setOpen}/>,
         },
     ];
 

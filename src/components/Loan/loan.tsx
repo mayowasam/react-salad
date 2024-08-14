@@ -593,7 +593,9 @@ const UploadVerification = ({ current, setCurrent }: LoanFormComponentProps) => 
     )
 }
 
-export const LoanComponent = () => {
+export const LoanComponent = ({setOpen}: {
+    setOpen:React.Dispatch<React.SetStateAction<boolean>>
+}) => {
     const [form] = Form.useForm();
     const [event, updateEvent] = useReducer(
         (prev: RepaymentState, next: RepaymentAction): RepaymentState => {
@@ -606,7 +608,7 @@ export const LoanComponent = () => {
             amount: "",
             repayment_period: "",
             isModalOpen: false,
-            href: false,
+            href: '',
             message: '',
 
         }
@@ -667,9 +669,10 @@ export const LoanComponent = () => {
             const response = await mutateAsync(data)
 
             if (response?.data?.payload) {
+                setOpen(false);
                 updateEvent({
                     isModalOpen: true,
-                    href: true,
+                    href: '/',
                     message: <>
                         <p className='font-bold text-xl py-3'>Loan Request Acknowledged </p>
                         <span className=''>Your loan request is acknowledged, We will get back to you.</span>
@@ -845,7 +848,7 @@ export function Loan({ name }: UseLoanProps) {
             content: <UploadVerification current={current} setCurrent={setCurrent} />,
         },
         {
-            content: <LoanComponent />,
+            content: <LoanComponent setOpen={setOpen}/>,
         },
     ];
 

@@ -26,14 +26,14 @@ interface ModalComponentProps {
     isModalOpen: boolean,
     setIsModalOpen: (isOpen: boolean) => void,
     message: ReactNode;
-    href: boolean,
+    href: string,
     maskClosable?:boolean
 
 }
 interface ModalState {
     isModalOpen: boolean,
     message: string | ReactNode
-    href: boolean
+    href: string
 }
 
 type ModalAction = Partial<ModalState>;

@@ -30,7 +30,7 @@ export const changeCurrency = (amount: number) => {
       if (error?.response && error?.response?.data.error?.response?.message?.length > 0) {
         return updateEvent({
           isModalOpen: true,
-          href: false,
+          href: '',
           message: React.createElement(
             React.Fragment,
             null,
@@ -44,7 +44,7 @@ export const changeCurrency = (amount: number) => {
       if (error?.response && error?.response?.data) {
         return updateEvent({
           isModalOpen: true,
-          href: false,
+          href: '',
           message: React.createElement(
             React.Fragment,
             null,
@@ -56,7 +56,7 @@ export const changeCurrency = (amount: number) => {
     } else {
       updateEvent({
         isModalOpen: true,
-        href: false,
+        href: '',
         message: React.createElement(
           React.Fragment,
           null,
