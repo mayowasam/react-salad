@@ -1,4 +1,4 @@
-import React, { Fragment, useReducer, useState }  from "react"
+import React, { Fragment, useReducer, useState } from "react"
 import { useMutation } from '@tanstack/react-query';
 import { Button, Form, Input, Modal, Select } from 'antd';
 import { DragUpload } from "../Uploads";
@@ -289,9 +289,10 @@ const DocumentUpload = () => {
 
 
     const onFinish = async (values: any) => {
-        console.log(values);
         try {
+            const information = handler('salad-widget-invoice')
             const response = await mutateInvoice({
+                ...information,
                 ...values,
             })
             if (response?.data?.payload) {
@@ -450,8 +451,8 @@ function Invoice({ name }: UseLoanProps) {
     const [current, setCurrent] = useState(0);
 
     const modalStyles = {
-        content: { 
-          background: 'none',
+        content: {
+            background: 'none',
         },
     }
 
@@ -467,11 +468,11 @@ function Invoice({ name }: UseLoanProps) {
             content: <CompanyDetails current={current} setCurrent={setCurrent} />,
         },
         {
-            content: <DocumentUpload  />,
+            content: <DocumentUpload />,
         },
     ];
 
-    return ( 
+    return (
         <Fragment>
             <button className='w-[250px] p-3 rounded bg-[#4dae37] text-white font-extrabold' onClick={() => setOpen(!open)}>{name ?? "Invoice with Salad"}</button>
             <Modal
@@ -483,11 +484,11 @@ function Invoice({ name }: UseLoanProps) {
                 maskClosable={false}
 
             >
-            <section className=" text-white max-w-full  flex items-center justify-center py-4">
-                <div>{steps[current].content}</div>
+                <section className=" text-white max-w-full  flex items-center justify-center py-4">
+                    <div>{steps[current].content}</div>
 
-            </section>
-        </Modal>
+                </section>
+            </Modal>
         </Fragment >
     )
 }

@@ -6,6 +6,7 @@ import { babel } from '@rollup/plugin-babel';
 import { dts } from "rollup-plugin-dts";
 import postcss from 'rollup-plugin-postcss'
 import replace from '@rollup/plugin-replace';
+import dotenv from "rollup-plugin-dotenv"
 
 export default [{
     input: 'src/index.ts',
@@ -46,15 +47,16 @@ export default [{
             tsconfig: './tsconfig.json',
             clean: true,
         }),
-        replace({
-            'process.env.NEXT_PUBLIC_BASEURL': JSON.stringify(process.env.NEXT_PUBLIC_BASEURL),
-            preventAssignment: true,
-          }),
+        dotenv(),
         babel({
             babelHelpers: 'bundled',
             exclude: 'node_modules/**', // Only transpile our source code
             extensions: ['.ts', '.js', '.tsx', '.jsx'],
         }),
+        replace({
+            'process.env.NODE_ENV': JSON.stringify('production'),
+            preventAssignment: true,
+          }),
         resolve(),
         commonjs()
     ],
