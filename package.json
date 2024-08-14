@@ -1,6 +1,6 @@
 {
   "name": "@mayowasam/react-salad",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "salad library",
   "scripts": {
     "rollup": "rollup --config",
@@ -33,6 +33,7 @@
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-commonjs": "^26.0.1",
     "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-replace": "^5.0.7",
     "@tanstack/react-query": "^5.51.23",
     "@testing-library/react": "^16.0.0",
     "@types/jest": "^29.5.12",

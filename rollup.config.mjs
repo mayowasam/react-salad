@@ -5,7 +5,7 @@ import pkg from './package.json' with { type: "json" };
 import { babel } from '@rollup/plugin-babel';
 import { dts } from "rollup-plugin-dts";
 import postcss from 'rollup-plugin-postcss'
-
+import replace from '@rollup/plugin-replace';
 
 export default [{
     input: 'src/index.ts',
@@ -46,6 +46,10 @@ export default [{
             tsconfig: './tsconfig.json',
             clean: true,
         }),
+        replace({
+            'process.env.NEXT_PUBLIC_BASEURL': JSON.stringify(process.env.NEXT_PUBLIC_BASEURL),
+            preventAssignment: true,
+          }),
         babel({
             babelHelpers: 'bundled',
             exclude: 'node_modules/**', // Only transpile our source code
