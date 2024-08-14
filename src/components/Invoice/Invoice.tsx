@@ -473,13 +473,15 @@ function Invoice({ name }: UseLoanProps) {
 
     return ( 
         <Fragment>
-            <button className='w-[150px] p-3 rounded bg-[#4dae37] text-white' onClick={() => setOpen(!open)}>{name ?? "Invoice with Salad"}</button>
+            <button className='w-[250px] p-3 rounded bg-[#4dae37] text-white font-extrabold' onClick={() => setOpen(!open)}>{name ?? "Invoice with Salad"}</button>
             <Modal
                 footer={null}
                 open={open}
                 onOk={() => setOpen(true)}
                 onCancel={() => setOpen(false)}
                 styles={modalStyles}
+                maskClosable={false}
+
             >
             <section className=" text-white max-w-full  flex items-center justify-center py-4">
                 <div>{steps[current].content}</div>
