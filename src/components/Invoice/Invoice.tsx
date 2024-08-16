@@ -1,7 +1,7 @@
 import React, { Fragment, useReducer, useState } from "react"
 import { useMutation } from '@tanstack/react-query';
 import { Button, Form, Input, Modal, Select } from 'antd';
-import { DragUpload } from "../Uploads";
+import { WidgetDragUpload } from "../Uploads";
 import type { UploadFile } from 'antd';
 import type { LoanFormComponentProps, ModalAction, ModalComponentProps, ModalState, UseLoanProps } from "../../types";
 import { Api } from "../../scripts/endpoints";
@@ -350,7 +350,7 @@ const DocumentUpload = ({setOpen}: {
                             { required: true, message: 'Please select your purchase receipt!' },
                         ]}
                     >
-                        <DragUpload
+                        <WidgetDragUpload
                             fileList={fileList}
                             fileName='purchase_order_url'
                             form={form}
@@ -371,7 +371,7 @@ const DocumentUpload = ({setOpen}: {
                             { required: true, message: 'Please your invoice image!' },
                         ]}
                     >
-                        <DragUpload
+                        <WidgetDragUpload
                             fileList={invoiceList}
                             fileName='invoice_url'
                             form={form}
@@ -392,7 +392,7 @@ const DocumentUpload = ({setOpen}: {
                             { required: true, message: 'Please select your CAC Document!' },
                         ]}
                     >
-                        <DragUpload
+                        <WidgetDragUpload
                             fileList={cacList}
                             fileName='cac_url'
                             form={form}
@@ -413,7 +413,7 @@ const DocumentUpload = ({setOpen}: {
                             { required: true, message: 'Please your Board of Directors ID!' },
                         ]}
                     >
-                        <DragUpload
+                        <WidgetDragUpload
                             fileList={directorList}
                             fileName='directors_image_url'
                             form={form}

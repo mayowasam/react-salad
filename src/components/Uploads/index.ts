@@ -1,1 +1,1 @@
-export { DragUpload, Uploads } from './Upload'
+export { DragUpload, Uploads , WidgetDragUpload} from './Upload'

@@ -18,9 +18,12 @@ class StorageHandler {
             throw new Error('Key must be a string');
         }
         // Storing the key in the instance using Symbol to make it private
-        (this as any)[this._keySymbol] = key;
-        // Storing the value in localStorage (stringify if it's an object)
-        localStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
+        if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+            (this as any)[this._keySymbol] = key;
+            localStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
+        } else {
+            console.warn('localStorage is not available');
+        }
     }
 
     // Getter method to retrieve value from localStorage using the private key
@@ -29,21 +32,31 @@ class StorageHandler {
         if (!key) {
             throw new Error('No key set in storage');
         }
-        const value = localStorage.getItem(key);
-        try {
-            return JSON.parse(value as string);
-        } catch (e) {
-            return value;
+        if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+            const value = localStorage.getItem(key);
+            try {
+                return JSON.parse(value as string);
+            } catch (e) {
+                return value;
+            }
+        } else {
+            console.warn('localStorage is not available');
+            return null;
         }
     }
 
     // Method to get value directly from localStorage
     getValue(key: string): any {
-        const value = localStorage.getItem(key);
-        try {
-            return JSON.parse(value as string);
-        } catch (e) {
-            return value;
+        if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+            const value = localStorage.getItem(key);
+            try {
+                return JSON.parse(value as string);
+            } catch (e) {
+                return value;
+            }
+        } else {
+            console.warn('localStorage is not available');
+            return null;
         }
     }
 }
