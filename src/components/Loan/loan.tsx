@@ -10,6 +10,7 @@ import { changeCurrency, formatPhoneNumber, handleError } from '../../scripts/ut
 import moment from 'moment';
 import { DownloadOutlined } from '@ant-design/icons';
 import withProviders from '../../scripts/withproviders';
+import { ModalComponent } from '../Modal';
 
 const { Option } = Select;
 
@@ -719,6 +720,10 @@ export const LoanComponent = ({setOpen}: {
         </Form.Item>
     );
 
+    const setIsModalOpen = (isOpen: boolean) => {
+        updateEvent({ isModalOpen: isOpen });
+    };
+
     return (
         <div className='bg-white w-[400px] rounded-xl widget'>
             <h1 className='text-black text-2xl font-extrabold pt-6 pb-4 px-6 '>Loan Details</h1>
@@ -823,6 +828,14 @@ export const LoanComponent = ({setOpen}: {
 
                 </div>
             </Form >
+
+            <ModalComponent
+                isModalOpen={event.isModalOpen}
+                setIsModalOpen={setIsModalOpen}
+                message={event.message}
+                href={event.href}
+
+            />
         </div >
     )
 }

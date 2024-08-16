@@ -1,6 +1,6 @@
 {
   "name": "@mayowasam/react-salad",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "salad library",
   "scripts": {
     "rollup": "rollup --config",
